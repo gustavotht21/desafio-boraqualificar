@@ -29,7 +29,7 @@ fun main() {
                 break
             }
             else -> {
-                println("Por favor insira um valor válido.\n\n")
+                println(red() + "Por favor insira um valor válido.\n\n" + reset())
                 continue
             }
         }
@@ -65,7 +65,7 @@ fun registerFunctionary (file: File) {
     writer.write(lines.joinToString("\n"))
     writer.close()
 
-    print("Funcionário cadastrado com sucesso!\n\n")
+    print(green() + "Funcionário cadastrado com sucesso!\n\n" + reset())
 }
 
 fun listFunctionary(file: File) {
@@ -74,7 +74,7 @@ fun listFunctionary(file: File) {
     reader.close()
 
     if (lines.isEmpty()) {
-        println("Não há nenhum funcionário cadastrado para exibir.\n\n")
+        println(red() + "Não há nenhum funcionário cadastrado para exibir.\n" + reset())
         return
     }
 
@@ -100,40 +100,98 @@ fun deleteFunctionary(file: File) {
     val lines = reader.readLines().toMutableList()
     reader.close()
 
-    print("Digite o nome do funcionário que deseja deletar:")
+    print("Digite o nome do funcionário que deseja deletar: ")
     val nome = readln()
 
-    var index = -1
-    var funcionarios = arrayOf<String>()
-    var cargos = arrayOf<String>()
+    val index = mutableListOf(-1)
+
+    val searchFunctionaries = File("searchFunctionaries.csv")
+    val readerSearchFunctionaries = FileReader(searchFunctionaries)
+    val linesSearchFunctionaries = readerSearchFunctionaries.readLines().toMutableList()
+
     for ((i, line) in lines.withIndex()) {
         val fields = line.split(",")
         if (fields[0] == nome) {
-            index = i
-//            funcionarios = funcionarios.plus(fields[0])
-//            cargos = cargos.plus(fields[1])
+            if (index[0] == -1) {
+                index.removeAt(0)
+            }
+            index.add(i)
+
+            val novaLinha = "${fields[0]},${fields[1]},${fields[2]}"
+            linesSearchFunctionaries.add(novaLinha)
+
+            val writerSearchFunctionaries = FileWriter(searchFunctionaries)
+            writerSearchFunctionaries.write(linesSearchFunctionaries.joinToString("\n"))
         }
     }
 
-//    if (funcionarios.size > 1) {
-//        print("Foram encontrados mais de um funcionário com o nome informado. Informe o número do funcionário a ser deletado")
-//        for (funcionario in funcionarios) {
-//
-//        }
-//    }
-
-    if (index == -1) {
-        println("Nenhum funcionário com o nome informado foi encontrado")
+    if (index[0] == -1) {
+        println(red() + "Nenhum funcionário com o nome informado foi encontrado" + reset())
         return
     }
 
-    lines.removeAt(index)
+    if (linesSearchFunctionaries.size > 1) {
+        println("Foram encontrados mais de um funcionário com o nome informado. Informe o número do funcionário a ser deletado")
+
+        var indexAux = 1;
+        for (lineSearchFunctionaries in linesSearchFunctionaries) {
+            val fields = lineSearchFunctionaries.split(",")
+            val nome = fields[0]
+            val cargo = fields[1]
+            val salario = fields[2]
+
+            println("$indexAux - ")
+            spacerTop(40)
+            spacerCenter(40, "Nome", nome)
+            spacerCenter(40, "Cargo", cargo)
+            spacerCenter(40, "Salário", salario)
+            spacerBotton(40)
+
+            indexAux++
+            print("\n")
+        }
+
+        while (true) {
+            print("Funcionário a ser deletado: (Insira \"0\" para cancelar a operação): ")
+            val respostaDeleta = readln()
+
+            when (respostaDeleta) {
+                "0" -> {
+                    println(red() + "Operação cancelada" + reset())
+                    return
+                }
+                "" -> {
+                    println(red() + "Por favor insira um valor válido.\n" + reset())
+                    continue
+                }
+                else -> {
+                    if (respostaDeleta.toInt() in lines.indices) {
+                        lines.removeAt(index[respostaDeleta.toInt()-1])
+
+                        val writer = FileWriter(file)
+                        writer.write(lines.joinToString("\n"))
+                        writer.close()
+                        val writerSearchFunctionaries = FileWriter(searchFunctionaries)
+                        writerSearchFunctionaries.write("")
+
+                        println(green() + "Funcionário deletado com sucesso\n" + reset())
+                        return
+                    } else {
+                        println(red() + "Por favor insira um valor válido.\n" + reset())
+                        continue
+                    }
+                }
+            }
+        }
+    }
+
+    lines.removeAt(index[0])
 
     val writer = FileWriter(file)
     writer.write(lines.joinToString("\n"))
     writer.close()
 
-    println("Funcionário deletado com sucesso")
+    println(green() + "Funcionário deletado com sucesso\n\n" + reset())
 }
 
 fun spacerTop (size: Int) {
@@ -162,4 +220,3 @@ fun spacerCenter (size: Int, dataName: String, data: Any) {
     }
     print(" ║\n")
 }
-
