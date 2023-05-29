@@ -2,8 +2,14 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
-class Functionary (nome: String, cargo: String, salario: Float) {
-
+class Functionary (val nome: String, val cargo: String, val salario: Float) {
+    fun getData(): Map<String, Any> {
+        return mapOf<String, Any>(
+            "nome" to this.nome,
+            "cargo" to this.cargo,
+            "salario" to this.salario
+        )
+    }
 }
 
 fun main() {
@@ -58,7 +64,10 @@ fun registerFunctionary (file: File) {
         salario = 0.0F
     }
 
-    val novaLinha = "$nome,$cargo,$salario"
+    val novoFuncionario = Functionary(nome, cargo, salario)
+    val dataNovoFuncionario = novoFuncionario.getData()
+
+    val novaLinha = "${dataNovoFuncionario["nome"]},${dataNovoFuncionario["cargo"]},${dataNovoFuncionario["salario"]}"
     lines.add(novaLinha)
 
     val writer = FileWriter(file)
