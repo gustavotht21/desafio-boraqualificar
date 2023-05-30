@@ -194,17 +194,6 @@ fun spacerBotton (size: Int) {
     print("╝\n")
 }
 
-fun spacerCenter (size: Int, dataName: String, data: Any) {
-    val text = "║ $dataName: $data"
-    val newSize = size - text.length
-
-    print(text)
-    for (i in 1 .. newSize) {
-        print(" ")
-    }
-    print(" ║\n")
-}
-
 fun table (data: List<String>) {
     var sizeTable = 120
     var sizeCell = 30
