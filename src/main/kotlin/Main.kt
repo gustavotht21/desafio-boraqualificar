@@ -19,24 +19,44 @@ class Functionary (val id: Int, val nome: String, val cargo: String, val salario
             val lines = reader.readLines().toMutableList()
             reader.close()
 
-            print("Insira o nome do funcionário: ")
-            var nome = readln()
-            print("Insira o cargo do funcionário: ")
-            var cargo = readln()
-            print("Insira o salário do funcionário: ")
-            var salario = readln().toFloat()
+            var nome = ""
+            var cargo = ""
+            var salario = ""
+            while (true) {
+                print("Insira o nome do funcionário: ")
+                nome = readln()
 
-            if (nome.isEmpty()) {
-                nome = "Vazio"
+                if (nome != "") {
+                    break
+                } else {
+                    print(red() + "Por favor insira um nome válido.\n\n" + reset())
+                    continue
+                }
             }
-            if (cargo.isEmpty()) {
-                cargo = "Vazio"
+            while (true) {
+                print("Insira o cargo do funcionário: ")
+                cargo = readln()
+
+                if (cargo != "") {
+                    break
+                } else {
+                    print(red() + "Por favor insira um cargo válido.\n\n" + reset())
+                    continue
+                }
             }
-            if (salario.toString().isEmpty()) {
-                salario = 0.0F
+            while (true) {
+                print("Insira o salário do funcionário: ")
+                salario = readln()
+
+                if (salario.matches("[0-9]+(\\.[0-9]+)?".toRegex())) {
+                    break
+                } else {
+                    print(red() + "Por favor insira um salário válido.\n\n" + reset())
+                    continue
+                }
             }
 
-            val novoFuncionario = Functionary(lines.size+1, nome, cargo, salario)
+            val novoFuncionario = Functionary(lines.size+1, nome, cargo, salario.toFloat())
             val dataNovoFuncionario = novoFuncionario.getData()
 
             val novaLinha = "${dataNovoFuncionario["id"]},${dataNovoFuncionario["nome"]},${dataNovoFuncionario["cargo"]},${dataNovoFuncionario["salario"]}"
