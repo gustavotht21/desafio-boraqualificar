@@ -86,21 +86,7 @@ fun listFunctionary(file: File) {
         println(red() + "Não há nenhum funcionário cadastrado para exibir.\n" + reset())
         return
     }
-
-    for (line in lines) {
-        val fields = line.split(",")
-        val nome = fields[0]
-        val cargo = fields[1]
-        val salario = fields[2]
-
-        spacerTop(40)
-        spacerCenter(40, "Nome", nome)
-        spacerCenter(40, "Cargo", cargo)
-        spacerCenter(40, "Salário", salario)
-        spacerBotton(40)
-
-        print("\n")
-    }
+    table(lines)
 }
 
 fun deleteFunctionary(file: File) {
@@ -228,4 +214,59 @@ fun spacerCenter (size: Int, dataName: String, data: Any) {
         print(" ")
     }
     print(" ║\n")
+}
+
+fun table (data: List<String>) {
+    var sizeTable = 90
+    var sizeCell = 30
+
+    for (line in data) {
+        val fields = line.split(",")
+        if (fields[0].length > sizeCell) {
+            sizeCell = fields[0].length
+            sizeTable = fields[0].length * 3
+        }
+        if (fields[1].length > sizeCell) {
+            sizeCell = fields[0].length
+            sizeTable = fields[0].length * 3
+        }
+        if (fields[2].length > sizeCell) {
+            sizeCell = fields[0].length
+            sizeTable = fields[0].length * 3
+        }
+    }
+
+    spacerTop(sizeTable+9)
+    cell(sizeCell, "Nome")
+    cell(sizeCell, "Cargo")
+    cell(sizeCell, "Salário")
+    print(" ║\n")
+    tableDivisor(sizeTable+9)
+
+    for (line in data) {
+        val fields = line.split(",")
+        cell(sizeCell, fields[0])
+        cell(sizeCell, fields[1])
+        cell(sizeCell, fields[2])
+        print(" ║\n")
+    }
+    spacerBotton(sizeTable+9)
+}
+
+fun cell (size: Int, data: String) {
+    val text = "║ $data"
+    val newSize = size - text.length + 3
+
+    print(text)
+    for (i in 1 .. newSize) {
+        print(" ")
+    }
+}
+
+fun tableDivisor(size: Int) {
+    print("╠")
+    for (index in 1 .. size) {
+        print("═")
+    }
+    print("╣\n")
 }
